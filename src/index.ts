@@ -60,6 +60,10 @@ async function generateMeasurements(year: number) {
         measuredValue += 100;
         hourlyIterator.add(1, "hour");
     }
+    if (db && stmt) {
+        stmt.finalize();
+        await runQuery(db, "COMMIT", []);
+    }
 }
 
 generateMeasurements(2022);
