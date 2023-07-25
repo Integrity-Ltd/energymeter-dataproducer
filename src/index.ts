@@ -36,10 +36,15 @@ async function generateMeasurements(year: number) {
     let stmt: Statement | null = null;
     while (hourlyIterator.isBefore(endOfYear) || hourlyIterator.isSame(endOfYear)) {
         if ((hourlyIterator.get("date") == 1) && (hourlyIterator.get("hour") == 0)) {
+            if (db && stmt) {
+                stmt.finalize();
+                await runQuery(db, "COMMIT", []);
+            }
             let dbFileName = hourlyIterator.format("YYYY-MM") + '-monthly.sqlite';
             db = new Database(dbFileName, sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE);
             console.log(moment().format(), `DB file '${dbFileName}' created.`);
             await runQuery(db, `CREATE TABLE "Measurements" ("id" INTEGER NOT NULL,"channel" INTEGER,"measured_value" REAL,"recorded_time" INTEGER, PRIMARY KEY("id" AUTOINCREMENT))`, []);
+            await runQuery(db, "BEGIN", []);
             stmt = db.prepare("INSERT INTO Measurements (channel, measured_value, recorded_time) VALUES (?, ?, ?)");
         }
         if (db && stmt) {
