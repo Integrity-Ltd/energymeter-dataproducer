@@ -17,6 +17,18 @@ function runQuery(dbase: Database, sql: string, params: Array<any>) {
     });
 }
 
+function execStatement(stmt: Statement, params: any[]) {
+    return new Promise<any>((resolve, reject) => {
+        stmt.run(params, (err: any, res: any) => {
+            if (err) {
+                console.error("Run query Error: ", err.message);
+                return reject(err.message);
+            }
+            return resolve(res);
+        });
+    });
+}
+
 async function generateMeasurements(year: number) {
 
     let hourlyIterator = moment([year, 0, 1]);//.tz("America/Los_Angeles");
@@ -35,7 +47,11 @@ async function generateMeasurements(year: number) {
         }
         if (db && stmt) {
             for (let channel = 1; channel <= 12; channel++) {
-                stmt.run([channel, measuredValue, hourlyIterator.unix()]);
+                try {
+                    await execStatement(stmt, [channel, measuredValue, hourlyIterator.unix()]);
+                } catch (err) {
+                    console.error(err);
+                }
                 //await runQuery(db, `INSERT INTO Measurements (channel, measured_value, recorded_time) VALUES (?, ?, ?)`, [channel, measuredValue, hourlyIterator.unix()]);
             }
         }
