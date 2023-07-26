@@ -30,7 +30,7 @@ function execStatement(stmt: Statement, params: any[]) {
 async function generateMeasurements(year: number, timeZone: string) {
 
     let hourlyIterator = moment.tz([year, 0, 1], timeZone);
-    let endOfYear = moment([year + 1, 0, 1]).tz(timeZone);
+    let endOfYear = moment.tz([year + 1, 0, 1], timeZone);
     let measuredValue = 0;
     let db: Database | null = null;
     let stmt: Statement | null = null;
