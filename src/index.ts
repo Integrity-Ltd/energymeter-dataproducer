@@ -69,4 +69,4 @@ async function generateMeasurements(year: number, timeZone: string) {
     }
 }
 
-generateMeasurements(2022, "America/Los_Angeles");
+generateMeasurements(2023, "America/Los_Angeles"); //"Europe/Budapest"
