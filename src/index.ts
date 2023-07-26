@@ -1,6 +1,7 @@
-import moment from 'moment-timezone';
-import { Database, Statement } from 'sqlite3';
-import sqlite3 from 'sqlite3';
+import moment from "moment-timezone";
+import { Database, Statement } from "sqlite3";
+import sqlite3 from "sqlite3";
+import fs from "fs";
 
 function runQuery(dbase: Database, sql: string, params: Array<any>) {
     return new Promise<any>((resolve, reject) => {
@@ -40,6 +41,9 @@ async function generateMeasurements(year: number, timeZone: string) {
                 await runQuery(db, "COMMIT", []);
             }
             let dbFileName = hourlyIterator.format("YYYY-MM") + '-monthly.sqlite';
+            if (fs.existsSync(dbFileName)) {
+                fs.rmSync(dbFileName)
+            }
             db = new Database(dbFileName, sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE);
             console.log(moment().format(), `DB file '${dbFileName}' created.`);
             await runQuery(db, `CREATE TABLE "Measurements" ("id" INTEGER NOT NULL,"channel" INTEGER,"measured_value" REAL,"recorded_time" INTEGER, PRIMARY KEY("id" AUTOINCREMENT))`, []);
