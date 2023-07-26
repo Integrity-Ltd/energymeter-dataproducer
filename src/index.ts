@@ -26,11 +26,10 @@ function execStatement(stmt: Statement, params: any[]) {
     });
 }
 
-async function generateMeasurements(year: number) {
+async function generateMeasurements(year: number, timeZone: string) {
 
-    let hourlyIterator = moment([year, 0, 1]);//.tz("America/Los_Angeles");
-    let lastMonth = moment(hourlyIterator);
-    let endOfYear = moment([year + 1, 0, 1]);//.tz("America/Los_Angeles");
+    let hourlyIterator = moment.tz([year, 0, 1], timeZone);
+    let endOfYear = moment([year + 1, 0, 1]).tz(timeZone);
     let measuredValue = 0;
     let db: Database | null = null;
     let stmt: Statement | null = null;
@@ -66,4 +65,4 @@ async function generateMeasurements(year: number) {
     }
 }
 
-generateMeasurements(2022);
+generateMeasurements(2022, "America/Los_Angeles");
