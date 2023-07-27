@@ -3,4 +3,5 @@
     "entryPoints": ["src/index.ts"],
     "out": "doc",
     "excludeNotDocumented": false,
+    "plugin": ["typedoc-plugin-not-exported", "typedoc-plugin-missing-exports"]
 }

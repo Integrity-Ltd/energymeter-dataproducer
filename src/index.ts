@@ -11,12 +11,14 @@ dayjs.extend(timezone)
 /**
  * Run a query on SQLite3 database
  * 
+ * @notExported
+ * @internal
  * @param dbase Database used run query
  * @param sql The SQL command for run
  * @param params The SQL parameters
  * @returns Promise for executed query
  */
-export function runQuery(dbase: Database, sql: string, params: Array<void>) {
+function runQuery(dbase: Database, sql: string, params: Array<void>) {
     return new Promise<any>((resolve, reject) => {
         return dbase.all(sql, params, (err: any, res: any) => {
             if (err) {
@@ -30,11 +32,13 @@ export function runQuery(dbase: Database, sql: string, params: Array<void>) {
 /**
  * Prepare a statement on SQLite3 database
  * 
+ * @notExported
+ * @internal
  * @param stmt Prepared statement for execute
  * @param params Parameters for statement
  * @returns Promise for executed statement
  */
-export function execStatement(stmt: Statement, params: (string | number)[]): Promise<void> {
+function execStatement(stmt: Statement, params: (string | number)[]): Promise<void> {
     return new Promise<void>((resolve, reject) => {
         stmt.run(params, (err: any, res: any) => {
             if (err) {
@@ -48,11 +52,12 @@ export function execStatement(stmt: Statement, params: (string | number)[]): Pro
 /**
  * Finalize a statement and commit executed SQLs 
  * 
+ * @notExported
  * @param db Database for commit
  * @param stmt Statement to finalize
  * @returns Promise for finalizing and commit
  */
-export async function finalizeAndCommit(db: Database, stmt: Statement): Promise<void> {
+async function finalizeAndCommit(db: Database, stmt: Statement): Promise<void> {
     return new Promise<void>(async (resolve, reject) => {
         try {
             stmt.finalize();
@@ -67,10 +72,11 @@ export async function finalizeAndCommit(db: Database, stmt: Statement): Promise<
 /**
  * Create database, table and statement
  * 
+ * @notExported
  * @param dbFileName Name of the database file
  * @returns Promise for Database and Statement
  */
-export async function createNewDb(dbFileName: string): Promise<[Database, Statement]> {
+async function createNewDb(dbFileName: string): Promise<[Database, Statement]> {
     return new Promise<[Database, Statement]>(async (resolve, reject) => {
         try {
             let db = new Database(dbFileName, sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE);
@@ -87,12 +93,13 @@ export async function createNewDb(dbFileName: string): Promise<[Database, Statem
 /**
  * Insert measurements into table for 12 channels
  * 
+ * @notExported
  * @param db Database for insertion
  * @param stmt Statement for executed
  * @param measuredValue Measured value
  * @param hourlyIterator Timestamp of measured values
  */
-export async function insertMeasurements(db: Database, stmt: Statement, measuredValue: number, hourlyIterator: dayjs.Dayjs): Promise<void> {
+async function insertMeasurements(db: Database, stmt: Statement, measuredValue: number, hourlyIterator: dayjs.Dayjs): Promise<void> {
     let promises: Promise<void>[] = [];
     for (let channel = 1; channel <= 12; channel++) {
         promises.push(execStatement(stmt, [channel, measuredValue, hourlyIterator.unix()]));
@@ -103,11 +110,12 @@ export async function insertMeasurements(db: Database, stmt: Statement, measured
 /**
  * Generate measurements into SQLite DBs for testing
  * 
+ * @notExported
  * @param year Starting year
  * @param generatedYears Number of years to generate
  * @param timeZone Timezone of insertion
  */
-export async function generateMeasurements(year: number, generatedYears: number, timeZone: string) {
+async function generateMeasurements(year: number, generatedYears: number, timeZone: string) {
 
     let hourlyIterator = dayjs.tz(year + "01-01", timeZone);
     let endOfYear = dayjs.tz(year + generatedYears + "01-01", timeZone);
