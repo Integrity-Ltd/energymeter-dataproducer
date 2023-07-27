@@ -8,6 +8,14 @@ import timezone from 'dayjs/plugin/timezone'
 dayjs.extend(utc)
 dayjs.extend(timezone)
 
+/**
+ * Run a query on SQLite3 database
+ * 
+ * @param dbase Database used run query
+ * @param sql The SQL command for run
+ * @param params The SQL parameters
+ * @returns Promise for executed query
+ */
 function runQuery(dbase: Database, sql: string, params: Array<void>) {
     return new Promise<any>((resolve, reject) => {
         return dbase.all(sql, params, (err: any, res: any) => {
@@ -19,6 +27,13 @@ function runQuery(dbase: Database, sql: string, params: Array<void>) {
     });
 }
 
+/**
+ * Prepare a statement on SQLite3 database
+ * 
+ * @param stmt Prepared statement for execute
+ * @param params Parameters for statement
+ * @returns Promise for executed statement
+ */
 function execStatement(stmt: Statement, params: (string | number)[]): Promise<void> {
     return new Promise<void>((resolve, reject) => {
         stmt.run(params, (err: any, res: any) => {
@@ -30,6 +45,13 @@ function execStatement(stmt: Statement, params: (string | number)[]): Promise<vo
     });
 }
 
+/**
+ * Finalize a statement and commit executed SQLs 
+ * 
+ * @param db Database for commit
+ * @param stmt Statement to finalize
+ * @returns Promise for finalizing and commit
+ */
 async function finalizeAndCommit(db: Database, stmt: Statement): Promise<void> {
     return new Promise<void>(async (resolve, reject) => {
         try {
@@ -42,6 +64,12 @@ async function finalizeAndCommit(db: Database, stmt: Statement): Promise<void> {
     })
 }
 
+/**
+ * Create database, table and statement
+ * 
+ * @param dbFileName Name of the database file
+ * @returns Promise for Database and Statement
+ */
 async function createNewDb(dbFileName: string): Promise<[Database, Statement]> {
     return new Promise<[Database, Statement]>(async (resolve, reject) => {
         try {
@@ -56,6 +84,14 @@ async function createNewDb(dbFileName: string): Promise<[Database, Statement]> {
     })
 }
 
+/**
+ * Insert measurements into table for 12 channels
+ * 
+ * @param db Database for insertion
+ * @param stmt Statement for executed
+ * @param measuredValue Measured value
+ * @param hourlyIterator Timestamp of measured values
+ */
 async function insertMeasurements(db: Database, stmt: Statement, measuredValue: number, hourlyIterator: dayjs.Dayjs): Promise<void> {
     let promises: Promise<void>[] = [];
     for (let channel = 1; channel <= 12; channel++) {
@@ -64,9 +100,16 @@ async function insertMeasurements(db: Database, stmt: Statement, measuredValue: 
     await Promise.all(promises);
 }
 
+/**
+ * Generate measurements into SQLite DBs for testing
+ * 
+ * @param year Starting year
+ * @param generatedYears Number of years to generate
+ * @param timeZone Timezone of insertion
+ */
 async function generateMeasurements(year: number, generatedYears: number, timeZone: string) {
 
-    let hourlyIterator = dayjs.tz(year + "01-01"); //, timeZone
+    let hourlyIterator = dayjs.tz(year + "01-01", timeZone);
     let endOfYear = dayjs.tz(year + generatedYears + "01-01", timeZone);
     let measuredValue = 0;
     let db: Database | null = null;
@@ -104,6 +147,9 @@ async function generateMeasurements(year: number, generatedYears: number, timeZo
     }
 }
 
-generateMeasurements(2023, 1, "America/Los_Angeles").catch((reason) => {
+/**
+ * Call generate measurements
+ */
+generateMeasurements(2023, 1, dayjs.tz.guess()).catch((reason) => {
     console.error(reason);
-}).then(() => console.log("Factoring finished.")); //"Europe/Budapest"
+}).then(() => console.log("Factoring finished."));
