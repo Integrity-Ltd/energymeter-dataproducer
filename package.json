@@ -24,9 +24,8 @@
   },
   "dependencies": {
     "@types/node": "^20.1.1",
+    "dayjs": "^1.11.9",
     "dotenv": "^16.2.0",
-    "moment": "^2.29.4",
-    "moment-timezone": "^0.5.43",
     "nodemon": "^2.0.22",
     "sqlite3": "^5.1.6"
   }
