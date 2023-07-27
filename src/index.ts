@@ -16,7 +16,7 @@ dayjs.extend(timezone)
  * @param params The SQL parameters
  * @returns Promise for executed query
  */
-function runQuery(dbase: Database, sql: string, params: Array<void>) {
+export function runQuery(dbase: Database, sql: string, params: Array<void>) {
     return new Promise<any>((resolve, reject) => {
         return dbase.all(sql, params, (err: any, res: any) => {
             if (err) {
@@ -34,7 +34,7 @@ function runQuery(dbase: Database, sql: string, params: Array<void>) {
  * @param params Parameters for statement
  * @returns Promise for executed statement
  */
-function execStatement(stmt: Statement, params: (string | number)[]): Promise<void> {
+export function execStatement(stmt: Statement, params: (string | number)[]): Promise<void> {
     return new Promise<void>((resolve, reject) => {
         stmt.run(params, (err: any, res: any) => {
             if (err) {
@@ -52,7 +52,7 @@ function execStatement(stmt: Statement, params: (string | number)[]): Promise<vo
  * @param stmt Statement to finalize
  * @returns Promise for finalizing and commit
  */
-async function finalizeAndCommit(db: Database, stmt: Statement): Promise<void> {
+export async function finalizeAndCommit(db: Database, stmt: Statement): Promise<void> {
     return new Promise<void>(async (resolve, reject) => {
         try {
             stmt.finalize();
@@ -70,7 +70,7 @@ async function finalizeAndCommit(db: Database, stmt: Statement): Promise<void> {
  * @param dbFileName Name of the database file
  * @returns Promise for Database and Statement
  */
-async function createNewDb(dbFileName: string): Promise<[Database, Statement]> {
+export async function createNewDb(dbFileName: string): Promise<[Database, Statement]> {
     return new Promise<[Database, Statement]>(async (resolve, reject) => {
         try {
             let db = new Database(dbFileName, sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE);
@@ -92,7 +92,7 @@ async function createNewDb(dbFileName: string): Promise<[Database, Statement]> {
  * @param measuredValue Measured value
  * @param hourlyIterator Timestamp of measured values
  */
-async function insertMeasurements(db: Database, stmt: Statement, measuredValue: number, hourlyIterator: dayjs.Dayjs): Promise<void> {
+export async function insertMeasurements(db: Database, stmt: Statement, measuredValue: number, hourlyIterator: dayjs.Dayjs): Promise<void> {
     let promises: Promise<void>[] = [];
     for (let channel = 1; channel <= 12; channel++) {
         promises.push(execStatement(stmt, [channel, measuredValue, hourlyIterator.unix()]));
@@ -107,7 +107,7 @@ async function insertMeasurements(db: Database, stmt: Statement, measuredValue: 
  * @param generatedYears Number of years to generate
  * @param timeZone Timezone of insertion
  */
-async function generateMeasurements(year: number, generatedYears: number, timeZone: string) {
+export async function generateMeasurements(year: number, generatedYears: number, timeZone: string) {
 
     let hourlyIterator = dayjs.tz(year + "01-01", timeZone);
     let endOfYear = dayjs.tz(year + generatedYears + "01-01", timeZone);
