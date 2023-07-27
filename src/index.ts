@@ -147,9 +147,6 @@ async function generateMeasurements(year: number, generatedYears: number, timeZo
     }
 }
 
-/**
- * Call generate measurements
- */
 generateMeasurements(2023, 1, dayjs.tz.guess()).catch((reason) => {
     console.error(reason);
 }).then(() => console.log("Factoring finished."));
