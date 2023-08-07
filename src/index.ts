@@ -10,9 +10,7 @@ dayjs.extend(timezone)
 
 /**
  * Run a query on SQLite3 database
- * 
  * @notExported
- * @internal
  * @param dbase Database used run query
  * @param sql The SQL command for run
  * @param params The SQL parameters
@@ -31,9 +29,7 @@ function runQuery(dbase: Database, sql: string, params: Array<void>) {
 
 /**
  * Prepare a statement on SQLite3 database
- * 
  * @notExported
- * @internal
  * @param stmt Prepared statement for execute
  * @param params Parameters for statement
  * @returns Promise for executed statement
@@ -51,7 +47,6 @@ function execStatement(stmt: Statement, params: (string | number)[]): Promise<vo
 
 /**
  * Finalize a statement and commit executed SQLs 
- * 
  * @notExported
  * @param db Database for commit
  * @param stmt Statement to finalize
@@ -71,7 +66,6 @@ async function finalizeAndCommit(db: Database, stmt: Statement): Promise<void> {
 
 /**
  * Create database, table and statement
- * 
  * @notExported
  * @param dbFileName Name of the database file
  * @returns Promise for Database and Statement
@@ -92,7 +86,6 @@ async function createNewDb(dbFileName: string): Promise<[Database, Statement]> {
 
 /**
  * Insert measurements into table for 12 channels
- * 
  * @notExported
  * @param db Database for insertion
  * @param stmt Statement for executed
@@ -109,7 +102,6 @@ async function insertMeasurements(db: Database, stmt: Statement, measuredValue: 
 
 /**
  * Generate measurements into SQLite DBs for testing
- * 
  * @notExported
  * @param year Starting year
  * @param generatedYears Number of years to generate
